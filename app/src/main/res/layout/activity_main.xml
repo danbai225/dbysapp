@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.MainActivity">
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp"
+        android:fadingEdge="vertical"
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/mainbj"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:alignContent="stretch"
+            app:alignItems="stretch"
+            app:flexWrap="wrap">
+
+            <org.sufficientlysecure.htmltextview.HtmlTextView
+                android:id="@+id/gg"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="@string/gg"
+                android:textAppearance="@android:style/TextAppearance.Small" />
+
+            <com.dalong.carrousellayout.CarrouselLayout
+                android:id="@+id/carrousel"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:gravity="center"
+                app:rotateDirection="anticlockwise">
+
+                <com.danbai.dbysapp.widget.YsImg
+                    android:id="@+id/lbt1"
+                    android:layout_width="130dp"
+                    android:layout_height="185dp" />
+
+                <com.danbai.dbysapp.widget.YsImg
+                    android:id="@+id/lbt2"
+                    android:layout_width="130dp"
+                    android:layout_height="185dp" />
+
+                <com.danbai.dbysapp.widget.YsImg
+                    android:id="@+id/lbt3"
+                    android:layout_width="130dp"
+                    android:layout_height="185dp" />
+
+                <com.danbai.dbysapp.widget.YsImg
+                    android:id="@+id/lbt4"
+                    android:layout_width="130dp"
+                    android:layout_height="185dp" />
+
+                <com.danbai.dbysapp.widget.YsImg
+                    android:id="@+id/lbt5"
+                    android:layout_width="130dp"
+                    android:layout_height="185dp" />
+
+                <com.danbai.dbysapp.widget.YsImg
+                    android:id="@+id/lbt6"
+                    android:layout_width="130dp"
+                    android:layout_height="185dp" />
+
+                <com.danbai.dbysapp.widget.YsImg
+                    android:id="@+id/lbt7"
+                    android:layout_width="130dp"
+                    android:layout_height="185dp" />
+
+                <com.danbai.dbysapp.widget.YsImg
+                    android:id="@+id/lbt8"
+                    android:layout_width="130dp"
+                    android:layout_height="185dp" />
+            </com.dalong.carrousellayout.CarrouselLayout>
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+    </ScrollView>
+
+    <com.etebarian.meowbottomnavigation.MeowBottomNavigation
+        android:id="@+id/maintab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints" />
+</androidx.constraintlayout.widget.ConstraintLayout>
