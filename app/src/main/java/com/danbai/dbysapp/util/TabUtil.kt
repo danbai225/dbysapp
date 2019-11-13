@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.Intent
 import com.danbai.dbysapp.activity.FenActivity
 import com.danbai.dbysapp.activity.MainActivity
+import com.danbai.dbysapp.activity.MeActivity
 import com.danbai.dbysapp.activity.SearchActivity
-import com.danbai.dbysapp.activity.TestActivity
 
 object TabUtil{
     fun tiao(context: Context, id: Int) {
@@ -24,9 +24,13 @@ object TabUtil{
                 context.startActivity(intent)
             }
             3 -> {
-                intent = Intent(context, TestActivity::class.java)
+                intent = Intent(context, MeActivity::class.java)
                 context.startActivity(intent)
             }
         }
+    }
+    fun tiao(context: Context, av:Class<*>) {
+        val intent: Intent = Intent(context,av)
+        context.startActivity(intent)
     }
 }

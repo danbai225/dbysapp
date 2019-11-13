@@ -86,7 +86,7 @@ public class TypeFragment extends Fragment {
 
     private void loddate(String type, int page) {
         inlod = true;
-        QuietOkHttp.get("https://dbys.vip/gettypeys")
+        QuietOkHttp.get("http://39.108.110.44:8081/gettypeys")
                 .addParams("type", type)
                 .addParams("page", String.valueOf(page))
                 .execute(new StringCallBack() {
@@ -101,8 +101,7 @@ public class TypeFragment extends Fragment {
                         maxpage = jsonObject.getIntValue("zys");
                         List<Ysb> list = JSONObject.parseArray(JSONObject.toJSONString(tjarry), Ysb.class);
                         for (Ysb ysb : list) {
-                            YsImg dbys = new YsImg(view.getContext(), ysb.getTp(), ysb.getPm(), ysb.getZt(), (screenWidth / 4) - 12);
-                            dbys.setId(ysb.getId());
+                            YsImg dbys = new YsImg(view.getContext(), ysb.getTp(), ysb.getPm(), ysb.getZt(),ysb.getId(),(screenWidth / 4) - 12);
                             fbl.addView(dbys);
                         }
                         inlod = false;

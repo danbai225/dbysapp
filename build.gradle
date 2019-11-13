@@ -4,14 +4,11 @@ buildscript {
     ext.kotlin_version = '1.3.50'
     repositories {
         google()
-        jcenter()
-        
+       jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
     }
 }
 
@@ -19,7 +16,14 @@ allprojects {
     repositories {
         google()
         jcenter()
-        
+        def cn = "http://maven.aliyun.com/nexus/content/groups/public/"
+        def abroad = "http://central.maven.org/maven2/"
+        // 先从url中下载jar若没有找到，则在artifactUrls中寻找
+        maven {
+            url cn
+            artifactUrls abroad
+        }
+        maven { url 'https://jitpack.io' }
     }
 }
 

@@ -17,10 +17,9 @@ import com.etebarian.meowbottomnavigation.MeowBottomNavigation
 import com.google.android.flexbox.FlexboxLayout
 import com.xwdz.http.QuietOkHttp
 import com.xwdz.http.callback.StringCallBack
+import okhttp3.Call
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter
 import org.sufficientlysecure.htmltextview.HtmlTextView
-import okhttp3.Call
-
 class MainActivity : AppCompatActivity() {
     private var tj: List<Ysb>? = null
     private var dy: List<Ysb>? = null
@@ -35,7 +34,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         ini()
     }
-
     override fun onStart() {
         super.onStart()
         tab!!.show(0, true)
@@ -44,12 +42,10 @@ class MainActivity : AppCompatActivity() {
     private fun ini() {
         screenWidth = PmUtil.getScreenWidth(this)
         //获取数据
-        QuietOkHttp.get("https://dbys.vip/sy")
+        QuietOkHttp.get("http://39.108.110.44:8081/sy")
             .execute(object : StringCallBack() {
                 override fun onFailure(call: Call, e: Exception) {
-
                 }
-
                 override fun onSuccess(call: Call, response: String) {
                     val jsonObject = JSON.parseObject(response)
                     var tjarry = jsonObject.getJSONArray("tj")
@@ -66,10 +62,6 @@ class MainActivity : AppCompatActivity() {
                     data()
                 }
             })
-        //轮播图
-        val carrousel = findViewById<CarrouselLayout>(R.id.carrousel)
-        carrousel.setR((screenWidth / 2).toFloat())//设置R的大小
-            .setAutoRotation(true).autoRotationTime = 1500//自动切换的时间  单位毫秒
         //底部导航
         tab = findViewById(R.id.maintab)
         tab!!.add(MeowBottomNavigation.Model(0, R.mipmap.home))
@@ -83,47 +75,46 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private fun data() {
+        val w = PmUtil.getW(this)
         //公告
         val htmlTextView = this.findViewById(R.id.gg) as HtmlTextView
         htmlTextView.setHtml(
             gg!!,
             HtmlHttpImageGetter(htmlTextView)
         )
-        //轮播图数据
-        for (i in 0..7) {
-            val id = resources.getIdentifier("lbt" + (i + 1), "id", packageName)
-            val ysImg = findViewById<YsImg>(id)
-            ysImg.updateimgurl(tj!![i].tp)
-            ysImg.id = tj!![i].id!!
+        //轮播图
+        val carrouse = findViewById<CarrouselLayout>(R.id.carrousel)
+        carrouse.setAutoRotation(true)
+        for (ysb in tj!!) {
+            val dbys = YsImg(this, ysb.tp, ysb.pm, null,ysb.id, w)
+            carrouse.addView(dbys)
         }
+        carrouse.checkChildView()
+        carrouse.r = (screenWidth/2).toFloat()
+        carrouse.startAnimationR(100f,(screenWidth/2).toFloat())
         val fbl = findViewById<FlexboxLayout>(R.id.mainbj)
-        val w = PmUtil.getW(this)
         //最新电影
         fbl.addView(getNewTile(R.string.newdy))
         for (ysb in dy!!) {
-            val dbys = YsImg(this, ysb.tp, ysb.pm, ysb.zt, w)
-            dbys.id = ysb.id!!
+            val dbys = YsImg(this, ysb.tp, ysb.pm, ysb.zt,ysb.id, w)
             fbl.addView(dbys)
         }
         //最新电视剧
         fbl.addView(getNewTile(R.string.newdsj))
         for (ysb in dsj!!) {
-            val dbys = YsImg(this, ysb.tp, ysb.pm, ysb.zt, w)
-            dbys.id = ysb.id!!
+            val dbys = YsImg(this, ysb.tp, ysb.pm, ysb.zt,ysb.id, w)
             fbl.addView(dbys)
         }
         //最新综艺
         fbl.addView(getNewTile(R.string.newzy))
         for (ysb in zy!!) {
-            val dbys = YsImg(this, ysb.tp, ysb.pm, ysb.zt, w)
-            dbys.id = ysb.id!!
+            val dbys = YsImg(this, ysb.tp, ysb.pm, ysb.zt,ysb.id, w)
             fbl.addView(dbys)
         }
         //最新dm
         fbl.addView(getNewTile(R.string.newdm))
         for (ysb in dm!!) {
-            val dbys = YsImg(this, ysb.tp, ysb.pm, ysb.zt, w)
-            dbys.id = ysb.id!!
+            val dbys = YsImg(this, ysb.tp, ysb.pm, ysb.zt,ysb.id, w)
             fbl.addView(dbys)
         }
 

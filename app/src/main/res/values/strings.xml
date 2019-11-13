@@ -17,4 +17,12 @@
     <string name="newzy">最新综艺</string>
     <string name="newdm">最新动漫</string>
     <string name="soutip">请输入影视片名、导演、演员用于搜索</string>
+    <string name="ys_pm">片名</string>
+    <string name="ys_zy">主演</string>
+    <string name="ys_dy">导演</string>
+    <string name="ys_pc">片长</string>
+    <string name="ys_sytime">上映时间</string>
+    <string name="ys_js">介绍</string>
+    <string name="ys_pf">评分</string>
+    <string name="ys_lx">类型</string>
 </resources>

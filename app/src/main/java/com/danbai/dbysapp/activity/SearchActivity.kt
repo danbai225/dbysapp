@@ -1,7 +1,6 @@
 package com.danbai.dbysapp.activity
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -9,6 +8,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.Gravity.CENTER_HORIZONTAL
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONObject
@@ -93,8 +93,7 @@ class SearchActivity : AppCompatActivity(){
         textView.width = PmUtil.getScreenWidth(this)
         fbl?.addView(textView)
         for (ysb in list!!) {
-            val dbys = YsImg(this, ysb.tp, ysb.pm, ysb.zt, PmUtil.getW(this))
-            dbys.id = ysb.id!!
+            val dbys = YsImg(this, ysb.tp, ysb.pm, ysb.zt,ysb.id,PmUtil.getW(this))
             fbl?.addView(dbys)
         }
     }

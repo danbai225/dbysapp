@@ -38,45 +38,7 @@
                 android:gravity="center"
                 app:rotateDirection="anticlockwise">
 
-                <com.danbai.dbysapp.widget.YsImg
-                    android:id="@+id/lbt1"
-                    android:layout_width="130dp"
-                    android:layout_height="185dp" />
 
-                <com.danbai.dbysapp.widget.YsImg
-                    android:id="@+id/lbt2"
-                    android:layout_width="130dp"
-                    android:layout_height="185dp" />
-
-                <com.danbai.dbysapp.widget.YsImg
-                    android:id="@+id/lbt3"
-                    android:layout_width="130dp"
-                    android:layout_height="185dp" />
-
-                <com.danbai.dbysapp.widget.YsImg
-                    android:id="@+id/lbt4"
-                    android:layout_width="130dp"
-                    android:layout_height="185dp" />
-
-                <com.danbai.dbysapp.widget.YsImg
-                    android:id="@+id/lbt5"
-                    android:layout_width="130dp"
-                    android:layout_height="185dp" />
-
-                <com.danbai.dbysapp.widget.YsImg
-                    android:id="@+id/lbt6"
-                    android:layout_width="130dp"
-                    android:layout_height="185dp" />
-
-                <com.danbai.dbysapp.widget.YsImg
-                    android:id="@+id/lbt7"
-                    android:layout_width="130dp"
-                    android:layout_height="185dp" />
-
-                <com.danbai.dbysapp.widget.YsImg
-                    android:id="@+id/lbt8"
-                    android:layout_width="130dp"
-                    android:layout_height="185dp" />
             </com.dalong.carrousellayout.CarrouselLayout>
 
         </com.google.android.flexbox.FlexboxLayout>
