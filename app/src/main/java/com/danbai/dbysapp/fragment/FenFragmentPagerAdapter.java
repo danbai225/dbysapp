@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 
 public class FenFragmentPagerAdapter extends FragmentPagerAdapter {
-    private String[] mTitles = new String[]{"电影", "电视剧", "综艺","动漫","直播"};
+    private String[] mTitles = new String[]{"电影", "电视剧", "综艺","动漫"};
     public FenFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
     }

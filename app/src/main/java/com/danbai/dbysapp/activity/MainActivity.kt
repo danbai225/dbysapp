@@ -17,6 +17,7 @@ import com.etebarian.meowbottomnavigation.MeowBottomNavigation
 import com.google.android.flexbox.FlexboxLayout
 import com.xwdz.http.QuietOkHttp
 import com.xwdz.http.callback.StringCallBack
+import ezy.boost.update.UpdateManager
 import okhttp3.Call
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter
 import org.sufficientlysecure.htmltextview.HtmlTextView
@@ -32,6 +33,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        UpdateManager.setWifiOnly(false)
+        UpdateManager.setUrl("http://w2671641895.e1.luyouxia.net:24986/api/v1/update", "app")
+        UpdateManager.install(this)
+        UpdateManager.check(this)
         ini()
     }
     override fun onStart() {
@@ -64,10 +69,10 @@ class MainActivity : AppCompatActivity() {
             })
         //底部导航
         tab = findViewById(R.id.maintab)
-        tab!!.add(MeowBottomNavigation.Model(0, R.mipmap.home))
-        tab!!.add(MeowBottomNavigation.Model(1, R.mipmap.fen))
-        tab!!.add(MeowBottomNavigation.Model(2, R.mipmap.search))
-        tab!!.add(MeowBottomNavigation.Model(3, R.mipmap.me))
+        tab!!.add(MeowBottomNavigation.Model(0, R.drawable.ic_home))
+        tab!!.add(MeowBottomNavigation.Model(1, R.drawable.ic_fen))
+        tab!!.add(MeowBottomNavigation.Model(2, R.drawable.ic_search))
+        tab!!.add(MeowBottomNavigation.Model(3, R.drawable.ic_me))
         tab?.setOnShowListener {
             if(it.id!=0){
                 TabUtil.tiao(this,it.id)
@@ -87,11 +92,12 @@ class MainActivity : AppCompatActivity() {
         carrouse.setAutoRotation(true)
         for (ysb in tj!!) {
             val dbys = YsImg(this, ysb.tp, ysb.pm, null,ysb.id, w)
+            dbys.text.setBackgroundColor(ContextCompat.getColor(this,R.color.db))
             carrouse.addView(dbys)
         }
         carrouse.checkChildView()
-        carrouse.r = (screenWidth/2).toFloat()
-        carrouse.startAnimationR(100f,(screenWidth/2).toFloat())
+        carrouse.startAnimationR(1f,(screenWidth/2).toFloat())
+        carrouse.setRotationZ(20)
         val fbl = findViewById<FlexboxLayout>(R.id.mainbj)
         //最新电影
         fbl.addView(getNewTile(R.string.newdy))

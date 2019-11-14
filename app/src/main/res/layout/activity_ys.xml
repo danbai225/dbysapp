@@ -6,30 +6,82 @@
     android:layout_height="match_parent"
     tools:context=".activity.YsActivity">
 
-    <com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
-        android:id="@+id/detail_player"
+    <com.danbai.dbysapp.widget.DbysPlayer
+        android:id="@+id/player"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" >
-    </com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer>
+        tools:ignore="MissingConstraints">
+
+    </com.danbai.dbysapp.widget.DbysPlayer>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="210dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/ysxx"
+        app:layout_constraintTop_toBottomOf="@+id/player">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:alignContent="stretch"
-            app:alignItems="stretch"
-            app:flexWrap="wrap">
+            android:orientation="vertical">
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/ysjis"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:alignContent="stretch"
+                app:alignItems="stretch"
+                app:flexWrap="wrap" />
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/ysxx"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:alignContent="stretch"
+                app:alignItems="stretch"
+                app:flexWrap="wrap" >
+                <com.coorchice.library.SuperTextView
+                    android:id="@+id/ysxx_pm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <com.coorchice.library.SuperTextView
+                    android:id="@+id/ysxx_lx"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
-        </com.google.android.flexbox.FlexboxLayout>
+                <com.coorchice.library.SuperTextView
+                    android:id="@+id/ysxx_zt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <com.coorchice.library.SuperTextView
+                    android:id="@+id/ysxx_dq"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <com.coorchice.library.SuperTextView
+                    android:id="@+id/ysxx_zy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <com.coorchice.library.SuperTextView
+                    android:id="@+id/ysxx_dy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <com.coorchice.library.SuperTextView
+                    android:id="@+id/ysxx_gxtime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <com.coorchice.library.SuperTextView
+                    android:id="@+id/ysxx_sytime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <com.coorchice.library.SuperTextView
+                    android:id="@+id/ysxx_js"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </com.google.android.flexbox.FlexboxLayout>
+        </LinearLayout>
     </ScrollView>
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

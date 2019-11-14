@@ -16,10 +16,10 @@ class MeActivity : AppCompatActivity() {
 
     private fun ini() {
         tab = findViewById(R.id.metab)
-        tab?.add(MeowBottomNavigation.Model(0, R.mipmap.home))
-        tab?.add(MeowBottomNavigation.Model(1, R.mipmap.fen))
-        tab?.add(MeowBottomNavigation.Model(2, R.mipmap.search))
-        tab?.add(MeowBottomNavigation.Model(3, R.mipmap.me))
+        tab?.add(MeowBottomNavigation.Model(0, R.drawable.ic_home))
+        tab?.add(MeowBottomNavigation.Model(1, R.drawable.ic_fen))
+        tab?.add(MeowBottomNavigation.Model(2, R.drawable.ic_search))
+        tab?.add(MeowBottomNavigation.Model(3, R.drawable.ic_me))
         tab?.setOnShowListener {
             if(it.id!=3){
                 TabUtil.tiao(this,it.id)
