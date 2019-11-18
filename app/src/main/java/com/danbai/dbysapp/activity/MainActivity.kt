@@ -96,8 +96,9 @@ class MainActivity : AppCompatActivity() {
             carrouse.addView(dbys)
         }
         carrouse.checkChildView()
-        carrouse.startAnimationR(1f,(screenWidth/2).toFloat())
-        carrouse.setRotationZ(20)
+        carrouse.refreshLayout()
+        carrouse.startAnimationR((screenWidth/2).toFloat(),(screenWidth/2).toFloat())
+        carrouse.setR((screenWidth/2).toFloat())
         val fbl = findViewById<FlexboxLayout>(R.id.mainbj)
         //最新电影
         fbl.addView(getNewTile(R.string.newdy))

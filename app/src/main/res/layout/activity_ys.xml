@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".activity.YsActivity">
 
-    <com.danbai.dbysapp.widget.DbysPlayer
+    <com.danbai.dbysapp.widget.DanmakuVideoPlayer
         android:id="@+id/player"
         android:layout_width="match_parent"
         android:layout_height="200dp"
@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints">
 
-    </com.danbai.dbysapp.widget.DbysPlayer>
+    </com.danbai.dbysapp.widget.DanmakuVideoPlayer>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -40,48 +40,53 @@
                 app:alignContent="stretch"
                 app:alignItems="stretch"
                 app:flexWrap="wrap" >
-                <com.coorchice.library.SuperTextView
+                <TextView
                     android:id="@+id/ysxx_pm"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
-                <com.coorchice.library.SuperTextView
+                <TextView
                     android:id="@+id/ysxx_lx"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
-                <com.coorchice.library.SuperTextView
+                <TextView
                     android:id="@+id/ysxx_zt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
-                <com.coorchice.library.SuperTextView
+                <TextView
                     android:id="@+id/ysxx_dq"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
-                <com.coorchice.library.SuperTextView
+                <TextView
                     android:id="@+id/ysxx_zy"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
-
-                <com.coorchice.library.SuperTextView
+                <TextView
                     android:id="@+id/ysxx_dy"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
-                <com.coorchice.library.SuperTextView
+                <TextView
                     android:id="@+id/ysxx_gxtime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
-                <com.coorchice.library.SuperTextView
+                <TextView
                     android:id="@+id/ysxx_sytime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
-                <com.coorchice.library.SuperTextView
+                <me.zhanghai.android.materialratingbar.MaterialRatingBar
+                    android:id="@+id/ysxx_pf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:mrb_progressTint="@color/Yellow1"
+                    app:mrb_secondaryProgressTint="@color/Red1"
+                    style="@style/Widget.MaterialRatingBar.RatingBar.Small"
+                    />
+                <TextView
                     android:id="@+id/ysxx_js"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
             </com.google.android.flexbox.FlexboxLayout>
         </LinearLayout>
     </ScrollView>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

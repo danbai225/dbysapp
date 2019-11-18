@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.Gravity.CENTER_HORIZONTAL
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -31,7 +30,6 @@ class SearchActivity : AppCompatActivity(){
     private val handler = Handler()
     private var tab:MeowBottomNavigation ?=null
     private val gosou = Runnable {
-        Log.d("淡白影视","sou")
         getdate(sou?.text.toString())
     }
     override fun onCreate(savedInstanceState: Bundle?) {
