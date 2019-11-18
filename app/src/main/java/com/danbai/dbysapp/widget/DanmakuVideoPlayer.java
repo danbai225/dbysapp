@@ -2,14 +2,19 @@ package com.danbai.dbysapp.widget;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.cdnbye.sdk.P2pEngine;
 import com.danbai.dbysapp.R;
+import com.danbai.dbysapp.entity.Ji;
 import com.shuyu.gsyvideoplayer.utils.Debuger;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.base.GSYBaseVideoPlayer;
@@ -18,6 +23,7 @@ import com.xwdz.http.QuietOkHttp;
 import com.xwdz.http.callback.StringCallBack;
 
 import java.util.HashMap;
+import java.util.List;
 
 import master.flame.danmaku.controller.IDanmakuView;
 import master.flame.danmaku.danmaku.model.BaseDanmaku;
@@ -36,6 +42,11 @@ public class DanmakuVideoPlayer extends StandardGSYVideoPlayer {
     private TextView mSendDanmaku, mToogleDanmaku;
     private long mDanmakuStartSeekPosition = -1;
     private boolean mDanmaKuShow = true;
+    public List<Ji> playlist;
+    public int playindex;
+    public boolean cache=false;
+    public int ysid;
+    public String tagpm;
     public DanmakuVideoPlayer(Context context, Boolean fullFlag) {
         super(context, fullFlag);
     }
@@ -49,11 +60,35 @@ public class DanmakuVideoPlayer extends StandardGSYVideoPlayer {
     }
 
     @Override
+    protected void cloneParams(GSYBaseVideoPlayer from, GSYBaseVideoPlayer to) {
+        super.cloneParams(from, to);
+        DanmakuVideoPlayer sf = (DanmakuVideoPlayer) from;
+        DanmakuVideoPlayer st = (DanmakuVideoPlayer) to;
+        st.playlist = sf.playlist;
+        st.playindex = sf.playindex;
+    }
+    @Override
     public int getLayoutId() {
         return R.layout.danmaku_layout;
     }
 
-
+    public boolean setUp(List<Ji> list,boolean cache,int index) {
+        if(list!=null&list.size()>0){
+            playlist=list;
+            playindex=index;
+            this.cache=cache;
+            return super.setUp(P2pEngine.getInstance().parseStreamUrl(playlist.get(index).getUrl()),cache,playlist.get(index).getName());
+        }
+        return false;
+    }
+    public boolean setUp(int index) {
+        if(playlist!=null&playlist.size()>0){
+            mSaveChangeViewTIme=0;
+            playindex=index;
+            return super.setUp(P2pEngine.getInstance().parseStreamUrl(playlist.get(index).getUrl()),cache,playlist.get(index).getName());
+        }
+        return false;
+    }
     @Override
     protected void init(Context context) {
         super.init(context);
@@ -65,13 +100,6 @@ public class DanmakuVideoPlayer extends StandardGSYVideoPlayer {
         mSendDanmaku.setOnClickListener(this);
         mToogleDanmaku.setOnClickListener(this);
     }
-
-    @Override
-    public void onPrepared() {
-        super.onPrepared();
-        onPrepareDanmaku(this);
-    }
-
     @Override
     public void onVideoPause() {
         super.onVideoPause();
@@ -117,7 +145,7 @@ public class DanmakuVideoPlayer extends StandardGSYVideoPlayer {
         super.onClick(v);
         switch (v.getId()) {
             case R.id.send_danmaku:
-                addDanmaku(true);
+               // addDanmaku(true);
                 break;
             case R.id.toogle_danmaku:
                 mDanmaKuShow = !mDanmaKuShow;
@@ -209,54 +237,17 @@ public class DanmakuVideoPlayer extends StandardGSYVideoPlayer {
                         }
                         resolveDanmakuShow();
                     }
-                    QuietOkHttp.get("http://39.108.110.44:1207/v3").addParams("id", "43047HD中字").execute(new StringCallBack() {
-                        @Override
-                        protected void onSuccess(Call call, String response) {
-                            JSONArray data = JSON.parseObject(response).getJSONArray("data");
-                            for (int i = 0; i < data.size(); i++) {
-                                JSONArray dm = data.getJSONArray(i);
-                                Long time = (long) (dm.getFloat(0) * 1000);
-                                int type = dm.getInteger(1);
-                                switch (type) {
-                                    case 0:
-                                        type = 1;
-                                        break;
-                                    case 1:
-                                        type = 5;
-                                        break;
-                                    case 2:
-                                        type = 4;
-                                        break;
-                                }
-                                int color = dm.getInteger(2);
-                                String text = dm.getString(4);
-                                BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
-                                if (danmaku == null || mDanmakuView == null) {
-                                    return;
-                                }
-                                danmaku.text = text + getCurrentPositionWhenPlaying();
-                                danmaku.padding = 5;
-                                danmaku.priority = 8;  // 可能会被各种过滤器过滤并隐藏显示，所以提高等级
-                                danmaku.isLive = false;
-                                danmaku.setTime(time);
-                                danmaku.textSize = 25f * (mParser.getDisplayer().getDensity() - 0.6f);
-                                danmaku.textColor = color;
-                                danmaku.textShadowColor = Color.WHITE;
-                                danmaku.borderColor = Color.GREEN;
-                                mDanmakuView.addDanmaku(danmaku);
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call call, Exception e) {
-                        }
-                    });
                 }
             });
             mDanmakuView.enableDanmakuDrawingCache(true);
         }
     }
-
+    @Override
+    public void onPrepared() {
+        super.onPrepared();
+        Log.d("淡白","333");
+        onPrepareDanmaku(this);
+    }
     /**
      * 弹幕的显示与关闭
      */
@@ -281,13 +272,72 @@ public class DanmakuVideoPlayer extends StandardGSYVideoPlayer {
     /**
      * 开始播放弹幕
      */
-    private void onPrepareDanmaku(DanmakuVideoPlayer gsyVideoPlayer) {
+    public void onPrepareDanmaku(DanmakuVideoPlayer gsyVideoPlayer) {
         if (gsyVideoPlayer.getDanmakuView() != null && !gsyVideoPlayer.getDanmakuView().isPrepared() && gsyVideoPlayer.getParser() != null) {
             gsyVideoPlayer.getDanmakuView().prepare(gsyVideoPlayer.getParser(),
                     gsyVideoPlayer.getDanmakuContext());
+            QuietOkHttp.get("http://39.108.110.44:1207/v3").addParams("id", ysid+playlist.get(playindex).getName()).execute(new StringCallBack() {
+                @Override
+                protected void onSuccess(Call call, String response) {
+                    JSONArray data = JSON.parseObject(response).getJSONArray("data");
+                    for (int i = 0; i < data.size(); i++) {
+                        JSONArray dm = data.getJSONArray(i);
+                        Long time = (long) (dm.getFloat(0) * 1000);
+                        int type = dm.getInteger(1);
+                        switch (type) {
+                            case 0:
+                                type = 1;
+                                break;
+                            case 1:
+                                type = 5;
+                                break;
+                            case 2:
+                                type = 4;
+                                break;
+                        }
+                        int color = dm.getInteger(2);
+                        String text = dm.getString(4);
+                        gsyVideoPlayer.addDanmaku(type,text,time,color);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call call, Exception e) {
+                }
+            });
+            QuietOkHttp.get("http://39.108.110.44:8081/ys/gettagid").addParams("pm",tagpm).addParams("ysid",ysid+playlist.get(playindex).getName()).execute(new StringCallBack() {
+                @Override
+                protected void onSuccess(Call call, String response) {
+                    Log.d("输出",response);
+                    for(int i=0;i<gsyVideoPlayer.getDuration()/1000;i+=30) {
+                        if (!TextUtils.isEmpty(response)) {
+                            QuietOkHttp.get("https://mfm.video.qq.com/danmu").addParams("otype", "json").addParams("target_id", response).addParams("timestamp", String.valueOf((i))).execute(new StringCallBack() {
+                                @Override
+                                protected void onSuccess(Call call, String response) {
+                                    JSONObject jsonObject = JSON.parseObject(response);
+                                    JSONArray comments = jsonObject.getJSONArray("comments");
+                                    if (comments != null) {
+                                        for (int i = 0; i < comments.size(); i++) {
+                                            gsyVideoPlayer.addDanmaku(1, comments.getJSONObject(i).getString("content"), (long) (comments.getJSONObject(i).getInteger("timepoint") * 1000), 16777215);
+                                        }
+                                    }
+                                }
+                                @Override
+                                public void onFailure(Call call, Exception e) {
+
+                                }
+                            });
+
+                        }
+                    }
+                    Log.d("腾讯弹幕加载ok","k");
+                }
+                @Override
+                public void onFailure(Call call, Exception e) {
+                }
+            });
         }
     }
-
     /**
      * 弹幕偏移
      */
@@ -354,22 +404,20 @@ public class DanmakuVideoPlayer extends StandardGSYVideoPlayer {
     /**
      * 模拟添加弹幕数据
      */
-    public void addDanmaku(boolean islive) {
-        BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
+    public void addDanmaku(int type,String text,long time,int color) {
+        BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(type);
         if (danmaku == null || mDanmakuView == null) {
             return;
         }
-        danmaku.text = "这是一条弹幕 " + getCurrentPositionWhenPlaying();
+        danmaku.text = text;
         danmaku.padding = 5;
-        danmaku.priority = 8;  // 可能会被各种过滤器过滤并隐藏显示，所以提高等级
-        danmaku.isLive = islive;
-        danmaku.setTime(mDanmakuView.getCurrentTime() + 500);
+        danmaku.priority = 0;  // 可能会被各种过滤器过滤并隐藏显示，所以提高等级
+        danmaku.isLive = false;
+        danmaku.setTime(time);
         danmaku.textSize = 25f * (mParser.getDisplayer().getDensity() - 0.6f);
-        danmaku.textColor = Color.RED;
+        danmaku.textColor = color;
         danmaku.textShadowColor = Color.WHITE;
         danmaku.borderColor = Color.GREEN;
         mDanmakuView.addDanmaku(danmaku);
-
     }
-
 }
