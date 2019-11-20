@@ -23,6 +23,7 @@ public class PmUtil {
 
     /**
      * 获取应用屏幕宽度
+     *
      * @param context
      * @return
      */
@@ -38,6 +39,7 @@ public class PmUtil {
 
     /**
      * 获取应用屏幕高度
+     *
      * @param context
      * @return
      */
@@ -53,6 +55,7 @@ public class PmUtil {
 
     /**
      * 获取实际屏幕的高度
+     *
      * @param context
      * @return
      */
@@ -68,6 +71,7 @@ public class PmUtil {
 
     /**
      * 取实际屏幕宽度
+     *
      * @param context
      * @return
      */
@@ -80,8 +84,9 @@ public class PmUtil {
         display.getRealSize(outSize);
         return outSize.x;
     }
-    public static int getW(Context context){
-           return getScreenWidth(context) / 4 - 12;
+
+    public static int getW(Context context) {
+        return getScreenWidth(context) / 4 - 12;
 
     }
 }

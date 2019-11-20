@@ -7,9 +7,8 @@ import com.danbai.dbysapp.util.TabUtil
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation
 
 
-
 class MeActivity : AppCompatActivity() {
-    private var tab:MeowBottomNavigation ?=null
+    private var tab: MeowBottomNavigation? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_me)
@@ -23,11 +22,12 @@ class MeActivity : AppCompatActivity() {
         tab?.add(MeowBottomNavigation.Model(2, R.drawable.ic_search))
         tab?.add(MeowBottomNavigation.Model(3, R.drawable.ic_me))
         tab?.setOnShowListener {
-            if(it.id!=3){
-                TabUtil.tiao(this,it.id)
+            if (it.id != 3) {
+                TabUtil.tiao(this, it.id)
             }
         }
     }
+
     override fun onStart() {
         super.onStart()
         tab!!.show(3, true)

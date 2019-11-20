@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -14,7 +12,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.danbai.dbysapp.R;
 import com.danbai.dbysapp.entity.Ji;
@@ -44,7 +41,7 @@ public class YsActivity extends AppCompatActivity {
     private OrientationUtils orientationUtils;
 
     int playindex = 0;
-    DanmakuVideoPlayer  videoPlayer;
+    DanmakuVideoPlayer videoPlayer;
     Ysb ys;
     protected List<Ji> jiList = new ArrayList<>();
     int screenWidth;
@@ -86,14 +83,12 @@ public class YsActivity extends AppCompatActivity {
         videoPlayer.setLockLand(false);
         videoPlayer.setShowFullAnimation(false);
         videoPlayer.setNeedLockFull(true);
-
-        //detailPlayer.setOpenPreView(true);
+        videoPlayer.setDismissControlTime(60000);
         videoPlayer.getFullscreenButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //直接横屏
                 orientationUtils.resolveByClick();
-
                 //第一个true是否需要隐藏actionbar，第二个true是否需要隐藏statusbar
                 videoPlayer.startWindowFullscreen(YsActivity.this, true, true);
             }
@@ -103,20 +98,19 @@ public class YsActivity extends AppCompatActivity {
             @Override
             public void onPrepared(String url, Object... objects) {
                 super.onPrepared(url, objects);
-                Log.d("淡白","123");
                 //开始播放了才能旋转和全屏
                 orientationUtils.setEnable(true);
                 isPlay = true;
             }
             @Override
             public void onAutoComplete(String url, Object... objects) {
-                DanmakuVideoPlayer p=(DanmakuVideoPlayer)objects[1];
-                if(p.playlist.size()>playindex+1){
-                    if (p.setUp(playindex+1)) {
-                        playindex+=1;
-                        playindex=p.playindex;
+                DanmakuVideoPlayer p = (DanmakuVideoPlayer) objects[1];
+                if (p.playlist.size() > playindex + 1) {
+                    if (p.setUp(playindex + 1)) {
+                        playindex += 1;
+                        playindex = p.playindex;
                         ysjis.getFlexItemAt(playindex).setBackgroundColor(getResources().getColor(R.color.Red1));
-                        ysjis.getFlexItemAt(playindex-1).setBackgroundColor(getResources().getColor(R.color.Orange1));
+                        ysjis.getFlexItemAt(playindex - 1).setBackgroundColor(getResources().getColor(R.color.Orange1));
                         return;
                     }
                 }
@@ -150,20 +144,21 @@ public class YsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         ysjis = findViewById(R.id.ysjis);
         int ysid = intent.getIntExtra("ysid", 1);
-        videoPlayer.ysid=ysid;
-        QuietOkHttp.get("http://39.108.110.44:8081/getys")
+        videoPlayer.ysid = ysid;
+        QuietOkHttp.get("https://dbys.vip/getys")
                 .addParams("id", String.valueOf(ysid))
                 .execute(new StringCallBack() {
                     @Override
                     public void onFailure(Call call, Exception e) {
                     }
+
                     @SuppressLint("SetTextI18n")
                     @Override
                     protected void onSuccess(Call call, String response) {
                         //将数据转为json对象
                         JSONObject jsonObject = JSON.parseObject(response);
                         ys = jsonObject.getJSONObject("ys").toJavaObject(Ysb.class);
-                        videoPlayer.tagpm=ys.getPm()+ys.getDy()+ys.getLx();
+                        videoPlayer.tagpm = ys.getPm() + ys.getDy() + ys.getLx();
                         //获取不为空的地址
                         if (ys.getGkdz().equals("[]")) {
                             jiList = JSON.parseArray(ys.getXzdz(), Ji.class);
@@ -181,7 +176,7 @@ public class YsActivity extends AppCompatActivity {
                             FancyButton isbt = (FancyButton) ysjis.getFlexItemAt(playindex);
                             isbt.setBackgroundColor(getResources().getColor(R.color.Red1));
                         }
-                        videoPlayer.setUp(jiList,false,playindex);
+                        videoPlayer.setUp(jiList, false, playindex);
                         //添加影视信息
                         TextView pm = findViewById(R.id.ysxx_pm);
                         TextView lx = findViewById(R.id.ysxx_lx);
@@ -211,6 +206,7 @@ public class YsActivity extends AppCompatActivity {
                     }
                 });
     }
+
     private FancyButton getJiBt(String string) {
         FancyButton fancyButton = new FancyButton(this);
         fancyButton.setTextColor(getResources().getColor(R.color.db));
@@ -237,6 +233,7 @@ public class YsActivity extends AppCompatActivity {
         fancyButton.setLayoutParams(lp);
         return fancyButton;
     }
+
     @Override
     public void onBackPressed() {
 
@@ -287,74 +284,11 @@ public class YsActivity extends AppCompatActivity {
             videoPlayer.onConfigurationChanged(this, newConfig, orientationUtils, true, true);
         }
     }
-    private void getDanmu(DanmakuVideoPlayer p) {
-
-
-        QuietOkHttp.get("http://39.108.110.44:1207/v3").addParams("id", ys.getId()+jiList.get(playindex).getName()).execute(new StringCallBack() {
-            @Override
-            protected void onSuccess(Call call, String response) {
-                JSONArray data = JSON.parseObject(response).getJSONArray("data");
-                for (int i = 0; i < data.size(); i++) {
-                    JSONArray dm = data.getJSONArray(i);
-                    Long time = (long) (dm.getFloat(0) * 1000);
-                    int type = dm.getInteger(1);
-                    switch (type) {
-                        case 0:
-                            type = 1;
-                            break;
-                        case 1:
-                            type = 5;
-                            break;
-                        case 2:
-                            type = 4;
-                            break;
-                    }
-                    int color = dm.getInteger(2);
-                    String text = dm.getString(4);
-                    videoPlayer.addDanmaku(type,text,time,color);
-                }
-            }
-
-            @Override
-            public void onFailure(Call call, Exception e) {
-            }
-        });
-        QuietOkHttp.get("http://39.108.110.44:8081/ys/gettagid").addParams("pm",ys.getPm()+ys.getDy()+ys.getLx()).addParams("ysid",ys.getId()+jiList.get(playindex).getName()).execute(new StringCallBack() {
-            @Override
-            protected void onSuccess(Call call, String response) {
-                Log.d("输出",response);
-                for(int i=0;i<p.getDuration()/1000;i+=30) {
-                    if (!TextUtils.isEmpty(response)) {
-                        QuietOkHttp.get("https://mfm.video.qq.com/danmu").addParams("otype", "json").addParams("target_id", response).addParams("timestamp", String.valueOf((i))).execute(new StringCallBack() {
-                            @Override
-                            protected void onSuccess(Call call, String response) {
-                                JSONObject jsonObject = JSON.parseObject(response);
-                                JSONArray comments = jsonObject.getJSONArray("comments");
-                                if (comments != null) {
-                                    for (int i = 0; i < comments.size(); i++) {
-                                        p.addDanmaku(1, comments.getJSONObject(i).getString("content"), (long) (comments.getJSONObject(i).getInteger("timepoint") * 1000), 16777215);
-                                    }
-                                }
-                            }
-                            @Override
-                            public void onFailure(Call call, Exception e) {
-
-                            }
-                        });
-
-                    }
-                }
-                Log.d("腾讯弹幕加载ok","k");
-            }
-            @Override
-            public void onFailure(Call call, Exception e) {
-            }
-        });
-    }
     private GSYVideoPlayer getCurPlay() {
         if (videoPlayer.getFullWindowPlayer() != null) {
-            return  videoPlayer.getFullWindowPlayer();
+            return videoPlayer.getFullWindowPlayer();
         }
         return videoPlayer;
     }
+
 }

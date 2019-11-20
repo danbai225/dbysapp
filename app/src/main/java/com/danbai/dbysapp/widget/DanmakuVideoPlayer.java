@@ -1,20 +1,21 @@
 package com.danbai.dbysapp.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.cdnbye.sdk.P2pEngine;
 import com.danbai.dbysapp.R;
 import com.danbai.dbysapp.entity.Ji;
+import com.github.mummyding.colorpickerdialog.ColorPickerDialog;
+import com.github.mummyding.colorpickerdialog.OnColorChangedListener;
 import com.shuyu.gsyvideoplayer.utils.Debuger;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.base.GSYBaseVideoPlayer;
@@ -37,16 +38,23 @@ import okhttp3.Call;
 
 public class DanmakuVideoPlayer extends StandardGSYVideoPlayer {
     private BaseDanmakuParser mParser;//解析器对象
-    private IDanmakuView mDanmakuView;//弹幕view
+    public IDanmakuView mDanmakuView;//弹幕view
     private DanmakuContext mDanmakuContext;
-    private TextView mSendDanmaku, mToogleDanmaku;
+    private TextView mSendDanmaku, mToogleDanmaku, dmcolor, dmtype;
+    private EditText dminput;
     private long mDanmakuStartSeekPosition = -1;
     private boolean mDanmaKuShow = true;
     public List<Ji> playlist;
     public int playindex;
-    public boolean cache=false;
+    public boolean cache = false;
     public int ysid;
     public String tagpm;
+    int[] colors = new int[]{Color.YELLOW, Color.BLACK, Color.BLUE, Color.GRAY,
+            Color.GREEN, Color.CYAN, Color.RED, Color.DKGRAY, Color.LTGRAY, Color.MAGENTA,
+            Color.rgb(100, 22, 33), Color.rgb(82, 182, 2), Color.rgb(122, 32, 12), Color.rgb(82, 12, 2),
+            Color.rgb(89, 23, 200), Color.rgb(13, 222, 23), Color.rgb(222, 22, 2), Color.rgb(2, 22, 222)};
+    String[] dmtypes = new String[]{"滑过", "顶部", "底部"};
+
     public DanmakuVideoPlayer(Context context, Boolean fullFlag) {
         super(context, fullFlag);
     }
@@ -67,39 +75,51 @@ public class DanmakuVideoPlayer extends StandardGSYVideoPlayer {
         st.playlist = sf.playlist;
         st.playindex = sf.playindex;
     }
+
     @Override
     public int getLayoutId() {
         return R.layout.danmaku_layout;
     }
 
-    public boolean setUp(List<Ji> list,boolean cache,int index) {
-        if(list!=null&list.size()>0){
-            playlist=list;
-            playindex=index;
-            this.cache=cache;
-            return super.setUp(P2pEngine.getInstance().parseStreamUrl(playlist.get(index).getUrl()),cache,playlist.get(index).getName());
+    public boolean setUp(List<Ji> list, boolean cache, int index) {
+        if (list != null & list.size() > 0) {
+            playlist = list;
+            playindex = index;
+            this.cache = cache;
+            return super.setUp(P2pEngine.getInstance().parseStreamUrl(playlist.get(index).getUrl()), cache, playlist.get(index).getName());
         }
         return false;
     }
+
     public boolean setUp(int index) {
-        if(playlist!=null&playlist.size()>0){
-            mSaveChangeViewTIme=0;
-            playindex=index;
-            return super.setUp(P2pEngine.getInstance().parseStreamUrl(playlist.get(index).getUrl()),cache,playlist.get(index).getName());
+        if (playlist != null & playlist.size() > 0) {
+            mSaveChangeViewTIme = 0;
+            playindex = index;
+            return super.setUp(P2pEngine.getInstance().parseStreamUrl(playlist.get(index).getUrl()), cache, playlist.get(index).getName());
         }
         return false;
     }
+
+    @SuppressLint("ResourceAsColor")
     @Override
     protected void init(Context context) {
         super.init(context);
         mDanmakuView = (DanmakuView) findViewById(R.id.danmaku_view);
         mSendDanmaku = (TextView) findViewById(R.id.send_danmaku);
         mToogleDanmaku = (TextView) findViewById(R.id.toogle_danmaku);
+        dmcolor = (TextView) findViewById(R.id.dmcolor);
+        dmtype = (TextView) findViewById(R.id.dmtype);
+        dminput = (EditText) findViewById(R.id.dminput);
+        dminput.setTextColor(Color.WHITE);
+        dminput.setHintTextColor(Color.RED);
         //初始化弹幕显示
         initDanmaku();
         mSendDanmaku.setOnClickListener(this);
         mToogleDanmaku.setOnClickListener(this);
+        dmcolor.setOnClickListener(this);
+        dmtype.setOnClickListener(this);
     }
+
     @Override
     public void onVideoPause() {
         super.onVideoPause();
@@ -145,12 +165,81 @@ public class DanmakuVideoPlayer extends StandardGSYVideoPlayer {
         super.onClick(v);
         switch (v.getId()) {
             case R.id.send_danmaku:
-               // addDanmaku(true);
+                if (dminput.getText().length() > 0) {
+                    String t = null;
+                    switch (dmtype.getText().toString()) {
+                        case "滑过":
+                            t = "0";
+                            break;
+                        case "顶部":
+                            t = "1";
+                            break;
+                        case "底部":
+                            t = "2";
+                            break;
+                    }
+                    int type = 0;
+                    switch (Integer.valueOf(t)) {
+                        case 0:
+                            type = 1;
+                            break;
+                        case 1:
+                            type = 5;
+                            break;
+                        case 2:
+                            type = 4;
+                            break;
+                    }
+                    addDanmaku(type, String.valueOf(dminput.getText()),mDanmakuView.getCurrentTime() + 500, dmcolor.getCurrentTextColor(), true);
+                    try {
+                        QuietOkHttp.post("http://39.108.110.44:1207/v3").addHeaders("Content-Type", " application/json;charset=UTF-8").addHeaders("Referer", "dbysapp")
+                                .addParams("id", ysid + playlist.get(playindex).getName())
+                                .addParams("author", "user")
+                                .addParams("time", String.valueOf(Float.valueOf(getCurrentPositionWhenPlaying()) / 1000))
+                                .addParams("text", String.valueOf(dminput.getText()))
+                                .addParams("color", String.valueOf(dmcolor.getCurrentTextColor()))
+                                .addParams("type", t).execute(new StringCallBack() {
+                            @Override
+                            protected void onSuccess(Call call, String response) {
+                            }
+                            @Override
+                            public void onFailure(Call call, Exception e) {
+                            }
+                        });
+                    } catch (Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                    dminput.setText("");
+                }
                 break;
             case R.id.toogle_danmaku:
                 mDanmaKuShow = !mDanmaKuShow;
                 resolveDanmakuShow();
                 break;
+            case R.id.dmcolor:
+                new ColorPickerDialog(getContext(), colors)
+                        .setDismissAfterClick(false)
+                        .setTitle("弹幕颜色选择")
+                        .setCheckedColor(Color.BLACK)
+                        .setOnColorChangedListener(new OnColorChangedListener() {
+                            @Override
+                            public void onColorChanged(int newColor) {
+                                dmcolor.setTextColor(newColor);
+                                dminput.setTextColor(newColor);
+                            }
+                        })
+                        .build(6)
+                        .show();
+                break;
+            case R.id.dmtype:
+                TextView tv = (TextView) v;
+                if (tv.getText().equals(dmtypes[0])) {
+                    tv.setText(dmtypes[1]);
+                } else if (tv.getText().equals(dmtypes[1])) {
+                    tv.setText(dmtypes[2]);
+                } else {
+                    tv.setText(dmtypes[0]);
+                }
         }
     }
 
@@ -242,12 +331,13 @@ public class DanmakuVideoPlayer extends StandardGSYVideoPlayer {
             mDanmakuView.enableDanmakuDrawingCache(true);
         }
     }
+
     @Override
     public void onPrepared() {
         super.onPrepared();
-        Log.d("淡白","333");
         onPrepareDanmaku(this);
     }
+
     /**
      * 弹幕的显示与关闭
      */
@@ -258,12 +348,12 @@ public class DanmakuVideoPlayer extends StandardGSYVideoPlayer {
                 if (mDanmaKuShow) {
                     if (!getDanmakuView().isShown())
                         getDanmakuView().show();
-                    mToogleDanmaku.setText("弹幕关");
+                    mToogleDanmaku.setText("弹幕:开");
                 } else {
                     if (getDanmakuView().isShown()) {
                         getDanmakuView().hide();
                     }
-                    mToogleDanmaku.setText("弹幕开");
+                    mToogleDanmaku.setText("弹幕:关");
                 }
             }
         });
@@ -276,7 +366,7 @@ public class DanmakuVideoPlayer extends StandardGSYVideoPlayer {
         if (gsyVideoPlayer.getDanmakuView() != null && !gsyVideoPlayer.getDanmakuView().isPrepared() && gsyVideoPlayer.getParser() != null) {
             gsyVideoPlayer.getDanmakuView().prepare(gsyVideoPlayer.getParser(),
                     gsyVideoPlayer.getDanmakuContext());
-            QuietOkHttp.get("http://39.108.110.44:1207/v3").addParams("id", ysid+playlist.get(playindex).getName()).execute(new StringCallBack() {
+            QuietOkHttp.get("http://39.108.110.44:1207/v3").addParams("id", ysid + playlist.get(playindex).getName()).execute(new StringCallBack() {
                 @Override
                 protected void onSuccess(Call call, String response) {
                     JSONArray data = JSON.parseObject(response).getJSONArray("data");
@@ -297,47 +387,17 @@ public class DanmakuVideoPlayer extends StandardGSYVideoPlayer {
                         }
                         int color = dm.getInteger(2);
                         String text = dm.getString(4);
-                        gsyVideoPlayer.addDanmaku(type,text,time,color);
+                        gsyVideoPlayer.addDanmaku(type, text, time, color, false);
                     }
                 }
 
-                @Override
-                public void onFailure(Call call, Exception e) {
-                }
-            });
-            QuietOkHttp.get("http://39.108.110.44:8081/ys/gettagid").addParams("pm",tagpm).addParams("ysid",ysid+playlist.get(playindex).getName()).execute(new StringCallBack() {
-                @Override
-                protected void onSuccess(Call call, String response) {
-                    Log.d("输出",response);
-                    for(int i=0;i<gsyVideoPlayer.getDuration()/1000;i+=30) {
-                        if (!TextUtils.isEmpty(response)) {
-                            QuietOkHttp.get("https://mfm.video.qq.com/danmu").addParams("otype", "json").addParams("target_id", response).addParams("timestamp", String.valueOf((i))).execute(new StringCallBack() {
-                                @Override
-                                protected void onSuccess(Call call, String response) {
-                                    JSONObject jsonObject = JSON.parseObject(response);
-                                    JSONArray comments = jsonObject.getJSONArray("comments");
-                                    if (comments != null) {
-                                        for (int i = 0; i < comments.size(); i++) {
-                                            gsyVideoPlayer.addDanmaku(1, comments.getJSONObject(i).getString("content"), (long) (comments.getJSONObject(i).getInteger("timepoint") * 1000), 16777215);
-                                        }
-                                    }
-                                }
-                                @Override
-                                public void onFailure(Call call, Exception e) {
-
-                                }
-                            });
-
-                        }
-                    }
-                    Log.d("腾讯弹幕加载ok","k");
-                }
                 @Override
                 public void onFailure(Call call, Exception e) {
                 }
             });
         }
     }
+
     /**
      * 弹幕偏移
      */
@@ -401,10 +461,7 @@ public class DanmakuVideoPlayer extends StandardGSYVideoPlayer {
         return mDanmaKuShow;
     }
 
-    /**
-     * 模拟添加弹幕数据
-     */
-    public void addDanmaku(int type,String text,long time,int color) {
+    public void addDanmaku(int type, String text, long time, int color, boolean self) {
         BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(type);
         if (danmaku == null || mDanmakuView == null) {
             return;
@@ -416,8 +473,9 @@ public class DanmakuVideoPlayer extends StandardGSYVideoPlayer {
         danmaku.setTime(time);
         danmaku.textSize = 25f * (mParser.getDisplayer().getDensity() - 0.6f);
         danmaku.textColor = color;
-        danmaku.textShadowColor = Color.WHITE;
-        danmaku.borderColor = Color.GREEN;
+        if (self) {
+            danmaku.borderColor = Color.RED;
+        }
         mDanmakuView.addDanmaku(danmaku);
     }
 }

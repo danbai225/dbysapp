@@ -21,6 +21,7 @@ import ezy.boost.update.UpdateManager
 import okhttp3.Call
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter
 import org.sufficientlysecure.htmltextview.HtmlTextView
+
 class MainActivity : AppCompatActivity() {
     private var tj: List<Ysb>? = null
     private var dy: List<Ysb>? = null
@@ -34,11 +35,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         UpdateManager.setWifiOnly(false)
-        UpdateManager.setUrl("http://w2671641895.e1.luyouxia.net:24986/api/v1/update", "app")
+        UpdateManager.setUrl("http://39.108.110.44:8081/api/v1/update", "app")
         UpdateManager.install(this)
         UpdateManager.check(this)
         ini()
     }
+
     override fun onStart() {
         super.onStart()
         tab!!.show(0, true)
@@ -51,6 +53,7 @@ class MainActivity : AppCompatActivity() {
             .execute(object : StringCallBack() {
                 override fun onFailure(call: Call, e: Exception) {
                 }
+
                 override fun onSuccess(call: Call, response: String) {
                     val jsonObject = JSON.parseObject(response)
                     var tjarry = jsonObject.getJSONArray("tj")
@@ -74,11 +77,12 @@ class MainActivity : AppCompatActivity() {
         tab!!.add(MeowBottomNavigation.Model(2, R.drawable.ic_search))
         tab!!.add(MeowBottomNavigation.Model(3, R.drawable.ic_me))
         tab?.setOnShowListener {
-            if(it.id!=0){
-                TabUtil.tiao(this,it.id)
+            if (it.id != 0) {
+                TabUtil.tiao(this, it.id)
             }
         }
     }
+
     private fun data() {
         val w = PmUtil.getW(this)
         //公告
@@ -91,37 +95,37 @@ class MainActivity : AppCompatActivity() {
         val carrouse = findViewById<CarrouselLayout>(R.id.carrousel)
         carrouse.setAutoRotation(true)
         for (ysb in tj!!) {
-            val dbys = YsImg(this, ysb.tp, ysb.pm, null,ysb.id, w)
-            dbys.text.setBackgroundColor(ContextCompat.getColor(this,R.color.db))
+            val dbys = YsImg(this, ysb.tp, ysb.pm, null, ysb.id, w)
+            dbys.text.setBackgroundColor(ContextCompat.getColor(this, R.color.db))
             carrouse.addView(dbys)
         }
         carrouse.checkChildView()
         carrouse.refreshLayout()
-        carrouse.startAnimationR((screenWidth/2).toFloat(),(screenWidth/2).toFloat())
-        carrouse.setR((screenWidth/2).toFloat())
+        carrouse.startAnimationR((screenWidth / 2).toFloat(), (screenWidth / 2).toFloat())
+        carrouse.setR((screenWidth / 2).toFloat())
         val fbl = findViewById<FlexboxLayout>(R.id.mainbj)
         //最新电影
         fbl.addView(getNewTile(R.string.newdy))
         for (ysb in dy!!) {
-            val dbys = YsImg(this, ysb.tp, ysb.pm, ysb.zt,ysb.id, w)
+            val dbys = YsImg(this, ysb.tp, ysb.pm, ysb.zt, ysb.id, w)
             fbl.addView(dbys)
         }
         //最新电视剧
         fbl.addView(getNewTile(R.string.newdsj))
         for (ysb in dsj!!) {
-            val dbys = YsImg(this, ysb.tp, ysb.pm, ysb.zt,ysb.id, w)
+            val dbys = YsImg(this, ysb.tp, ysb.pm, ysb.zt, ysb.id, w)
             fbl.addView(dbys)
         }
         //最新综艺
         fbl.addView(getNewTile(R.string.newzy))
         for (ysb in zy!!) {
-            val dbys = YsImg(this, ysb.tp, ysb.pm, ysb.zt,ysb.id, w)
+            val dbys = YsImg(this, ysb.tp, ysb.pm, ysb.zt, ysb.id, w)
             fbl.addView(dbys)
         }
         //最新dm
         fbl.addView(getNewTile(R.string.newdm))
         for (ysb in dm!!) {
-            val dbys = YsImg(this, ysb.tp, ysb.pm, ysb.zt,ysb.id, w)
+            val dbys = YsImg(this, ysb.tp, ysb.pm, ysb.zt, ysb.id, w)
             fbl.addView(dbys)
         }
 

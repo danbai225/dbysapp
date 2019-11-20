@@ -7,11 +7,11 @@ import com.danbai.dbysapp.activity.MainActivity
 import com.danbai.dbysapp.activity.MeActivity
 import com.danbai.dbysapp.activity.SearchActivity
 
-object TabUtil{
+object TabUtil {
     fun tiao(context: Context, id: Int) {
         val intent: Intent
         when (id) {
-            0->{
+            0 -> {
                 intent = Intent(context, MainActivity::class.java)
                 context.startActivity(intent)
             }
@@ -29,8 +29,9 @@ object TabUtil{
             }
         }
     }
-    fun tiao(context: Context, av:Class<*>) {
-        val intent: Intent = Intent(context,av)
+
+    fun tiao(context: Context, av: Class<*>) {
+        val intent: Intent = Intent(context, av)
         context.startActivity(intent)
     }
 }

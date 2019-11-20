@@ -2,6 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@android:color/black">
 
     <RelativeLayout
@@ -89,29 +91,55 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="20dp"
+            android:layout_height="50dp"
             android:layout_gravity="center"
             android:orientation="horizontal">
+            <TextView
+                android:id="@+id/dmtype"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="1dp"
+                android:gravity="center"
+                android:text="滑过"
+                android:textColor="#ffffff" />
+            <TextView
+                android:id="@+id/dmcolor"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:gravity="center"
+                android:text="颜色"
+                android:textColor="#ffffff" />
+
+            <EditText
+                android:id="@+id/dminput"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:imeOptions="flagNoExtractUi"
+                android:background="@null"
+                android:hint="@string/indm"
+                android:singleLine="true"
+                />
 
             <TextView
                 android:id="@+id/send_danmaku"
-                android:layout_width="match_parent"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#808080"
+                android:layout_marginLeft="1dp"
                 android:gravity="center"
-                android:text="发送弹幕"
+                android:text="发送"
                 android:textColor="#ffffff" />
 
             <TextView
                 android:id="@+id/toogle_danmaku"
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="1dp"
                 android:gravity="center"
-                android:text="弹幕关"
+                android:text="弹幕:开"
                 android:textColor="#ffffff" />
-
         </LinearLayout>
     </LinearLayout>
 

@@ -22,14 +22,15 @@ public class YsImg extends FrameLayout {
     private TextView text;
     private TextView yszt;
     private int ysid;
-    public YsImg(@NonNull Context context, String imgurl, String pm, String zt,int id, int w) {
+
+    public YsImg(@NonNull Context context, String imgurl, String pm, String zt, int id, int w) {
         super(context);
         //加载组件
         LayoutInflater.from(context).inflate(R.layout.ysimg, this);
         img = findViewById(R.id.ysimg);
         text = findViewById(R.id.yspm);
         yszt = findViewById(R.id.yszt);
-        ysid=id;
+        ysid = id;
         //设置数据
         ViewGroup.LayoutParams layoutParams1 = img.getLayoutParams();
         Glide.with(this).load(imgurl).into(img);
@@ -39,8 +40,8 @@ public class YsImg extends FrameLayout {
         img.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(v.getContext(), YsActivity.class);
-                intent.putExtra("ysid",ysid);
+                Intent intent = new Intent(v.getContext(), YsActivity.class);
+                intent.putExtra("ysid", ysid);
                 v.getContext().startActivity(intent);
             }
         });
@@ -48,13 +49,14 @@ public class YsImg extends FrameLayout {
         layoutParams1.width = w;
         text.setText(pm);
         text.setLayoutParams(layoutParams1);
-        if(zt!=null){
+        if (zt != null) {
             yszt.setLayoutParams(layoutParams1);
             yszt.setText(zt);
-        }else {
+        } else {
             yszt.setHeight(0);
         }
     }
+
     public YsImg(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         LayoutInflater.from(context).inflate(R.layout.ysimg, this);
