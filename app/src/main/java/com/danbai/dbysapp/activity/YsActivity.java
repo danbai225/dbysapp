@@ -24,6 +24,7 @@ import com.shuyu.gsyvideoplayer.listener.GSYSampleCallBack;
 import com.shuyu.gsyvideoplayer.listener.LockClickListener;
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
+import com.umeng.analytics.MobclickAgent;
 import com.xwdz.http.QuietOkHttp;
 import com.xwdz.http.callback.StringCallBack;
 
@@ -253,6 +254,7 @@ public class YsActivity extends AppCompatActivity {
         getCurPlay().onVideoPause();
         super.onPause();
         isPause = true;
+        MobclickAgent.onPause(this);
     }
 
     @Override
@@ -260,6 +262,7 @@ public class YsActivity extends AppCompatActivity {
         getCurPlay().onVideoResume();
         super.onResume();
         isPause = false;
+        MobclickAgent.onResume(this);
     }
 
     @Override

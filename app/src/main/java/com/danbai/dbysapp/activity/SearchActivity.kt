@@ -19,9 +19,11 @@ import com.danbai.dbysapp.widget.YsImg
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation
 import com.google.android.flexbox.FlexboxLayout
 import com.rengwuxian.materialedittext.MaterialEditText
+import com.umeng.analytics.MobclickAgent
 import com.xwdz.http.QuietOkHttp
 import com.xwdz.http.callback.StringCallBack
 import okhttp3.Call
+
 
 class SearchActivity : AppCompatActivity() {
     private var fbl: FlexboxLayout? = null
@@ -105,5 +107,14 @@ class SearchActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         tab!!.show(2, true)
+    }
+    override fun onResume() {
+        super.onResume()
+        MobclickAgent.onResume(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        MobclickAgent.onPause(this)
     }
 }

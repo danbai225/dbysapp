@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.danbai.dbysapp.R
 import com.danbai.dbysapp.util.TabUtil
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation
+import com.umeng.analytics.MobclickAgent
 
 
 class MeActivity : AppCompatActivity() {
@@ -31,5 +32,14 @@ class MeActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         tab!!.show(3, true)
+    }
+    override fun onResume() {
+        super.onResume()
+        MobclickAgent.onResume(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        MobclickAgent.onPause(this)
     }
 }

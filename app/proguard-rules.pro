@@ -24,3 +24,13 @@
 -keep interface com.cdnbye.**{*;}
 -dontwarn org.webrtc.**
 -keep class org.webrtc.**{*;}
+-keep class com.umeng.** {*;}
+
+-keepclassmembers class * {
+   public <init> (org.json.JSONObject);
+}
+
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}

@@ -15,12 +15,14 @@ import com.danbai.dbysapp.util.TabUtil
 import com.danbai.dbysapp.widget.YsImg
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation
 import com.google.android.flexbox.FlexboxLayout
+import com.umeng.analytics.MobclickAgent
 import com.xwdz.http.QuietOkHttp
 import com.xwdz.http.callback.StringCallBack
 import ezy.boost.update.UpdateManager
 import okhttp3.Call
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter
 import org.sufficientlysecure.htmltextview.HtmlTextView
+
 
 class MainActivity : AppCompatActivity() {
     private var tj: List<Ysb>? = null
@@ -139,5 +141,14 @@ class MainActivity : AppCompatActivity() {
         textView.textSize = 24f
         textView.width = screenWidth
         return textView
+    }
+    override fun onResume() {
+        super.onResume()
+        MobclickAgent.onResume(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        MobclickAgent.onPause(this)
     }
 }

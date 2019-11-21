@@ -8,6 +8,8 @@ import com.danbai.dbysapp.fragment.FenFragmentPagerAdapter
 import com.danbai.dbysapp.util.TabUtil
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation
 import com.google.android.material.tabs.TabLayout
+import com.umeng.analytics.MobclickAgent
+
 
 class FenActivity : AppCompatActivity() {
     private var mTabLayout: TabLayout? = null
@@ -51,5 +53,14 @@ class FenActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         tab!!.show(1, true)
+    }
+    override fun onResume() {
+        super.onResume()
+        MobclickAgent.onResume(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        MobclickAgent.onPause(this)
     }
 }

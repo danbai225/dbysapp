@@ -40,8 +40,8 @@ public class DanmakuVideoPlayer extends StandardGSYVideoPlayer {
     private BaseDanmakuParser mParser;//解析器对象
     public IDanmakuView mDanmakuView;//弹幕view
     private DanmakuContext mDanmakuContext;
-    private TextView mSendDanmaku, mToogleDanmaku, dmcolor, dmtype;
-    private EditText dminput;
+    public TextView mSendDanmaku, mToogleDanmaku, dmcolor, dmtype;
+    public EditText dminput;
     private long mDanmakuStartSeekPosition = -1;
     private boolean mDanmaKuShow = true;
     public List<Ji> playlist;
