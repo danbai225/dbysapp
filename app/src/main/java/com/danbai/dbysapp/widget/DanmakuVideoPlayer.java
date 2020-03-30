@@ -192,7 +192,7 @@ public class DanmakuVideoPlayer extends StandardGSYVideoPlayer {
                     }
                     addDanmaku(type, String.valueOf(dminput.getText()),mDanmakuView.getCurrentTime() + 500, dmcolor.getCurrentTextColor(), true);
                     try {
-                        QuietOkHttp.post("http://39.108.110.44:1207/v3").addHeaders("Content-Type", " application/json;charset=UTF-8").addHeaders("Referer", "dbysapp")
+                        QuietOkHttp.post("https://dm.dbys.vip/v3").addHeaders("Content-Type", " application/json;charset=UTF-8").addHeaders("Referer", "dbysapp")
                                 .addParams("id", ysid + playlist.get(playindex).getName())
                                 .addParams("author", "user")
                                 .addParams("time", String.valueOf(Float.valueOf(getCurrentPositionWhenPlaying()) / 1000))
@@ -366,7 +366,7 @@ public class DanmakuVideoPlayer extends StandardGSYVideoPlayer {
         if (gsyVideoPlayer.getDanmakuView() != null && !gsyVideoPlayer.getDanmakuView().isPrepared() && gsyVideoPlayer.getParser() != null) {
             gsyVideoPlayer.getDanmakuView().prepare(gsyVideoPlayer.getParser(),
                     gsyVideoPlayer.getDanmakuContext());
-            QuietOkHttp.get("http://39.108.110.44:1207/v3").addParams("id", ysid + playlist.get(playindex).getName()).execute(new StringCallBack() {
+            QuietOkHttp.get("https://dm.dbys.vip/v3").addParams("id", ysid + playlist.get(playindex).getName()).execute(new StringCallBack() {
                 @Override
                 protected void onSuccess(Call call, String response) {
                     JSONArray data = JSON.parseObject(response).getJSONArray("data");

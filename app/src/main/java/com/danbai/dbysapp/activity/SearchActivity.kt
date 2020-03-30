@@ -71,7 +71,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun getdate(gjc: String) {
-        QuietOkHttp.get("http://39.108.110.44:8081/api/v1/ys/search/$gjc")
+        QuietOkHttp.get("http://185.207.153.189:8081/api/v1/ys/search/$gjc")
             .execute(object : StringCallBack() {
                 override fun onFailure(call: Call, e: Exception) {
 

@@ -4,9 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +32,12 @@ import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 import com.umeng.analytics.MobclickAgent;
 import com.xwdz.http.QuietOkHttp;
 import com.xwdz.http.callback.StringCallBack;
+import com.yanbo.lib_screen.callback.ControlCallback;
+import com.yanbo.lib_screen.entity.ClingDevice;
+import com.yanbo.lib_screen.entity.RemoteItem;
+import com.yanbo.lib_screen.manager.ClingManager;
+import com.yanbo.lib_screen.manager.ControlManager;
+import com.yanbo.lib_screen.manager.DeviceManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +51,6 @@ public class YsActivity extends AppCompatActivity {
     private boolean isPause;
     private boolean isDestory;
     private OrientationUtils orientationUtils;
-
     int playindex = 0;
     DanmakuVideoPlayer videoPlayer;
     Ysb ys;
@@ -48,14 +58,93 @@ public class YsActivity extends AppCompatActivity {
     int screenWidth;
     FlexboxLayout ysjis;
 
+    //投屏
+    private List<ClingDevice> clingDevices;
+    private RemoteItem remoteItem;
+    private Spinner spinner;
+    private ArrayAdapter<String> adapter = null;
+    private Button touping;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ys);
         videoPlayer = findViewById(R.id.player);
+        spinner=findViewById(R.id.spinner);
+        touping=findViewById(R.id.touping);
         init();
+        ClingManager.getInstance().startClingService();
+        tp();
     }
 
+    private void tp(){
+        //搜索设备
+        clingDevices = DeviceManager.getInstance().getClingDeviceList();
+        adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item);
+        //设置下拉列表风格
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //将适配器添加到spinner中去
+        spinner.setAdapter(adapter);
+        spinner.setVisibility(View.VISIBLE);//设置默认显示
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                       int arg2, long arg3) {
+                // TODO Auto-generated method stub
+                for (int i=0;i<clingDevices.size();i++){
+                    if(getDname(clingDevices.get(i)).equals(((TextView)arg1).getText())){
+                        DeviceManager.getInstance().setCurrClingDevice(clingDevices.get(i));
+                    }
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+            }
+        });
+
+        if(clingDevices.size()>0){
+            for (int i=0;i<clingDevices.size();i++){
+                adapter.add(getDname(clingDevices.get(i)));
+            }
+        }
+        touping.setOnClickListener(b->{
+            //设置网络投屏的信息
+            RemoteItem itemurl = new RemoteItem("淡白影视", "996", "淡白影视",107362668, "00:00:00", "1920x1080",jiList.get(playindex).getUrl());
+            //添加网络投屏的信息
+            ClingManager.getInstance().setRemoteItem(itemurl);
+            remoteItem = ClingManager.getInstance().getRemoteItem();
+            //播放
+            if (ControlManager.getInstance().getState() == ControlManager.CastState.STOPED) {
+                newPlayCastRemoteContent();
+            }
+        });
+    }
+    /**
+     * 网络投屏
+     */
+    private String getDname(ClingDevice device){
+        return device.getDevice().getDetails().getFriendlyName()+"-"+device.getDevice().getDetails().getPresentationURI().getHost();
+    }
+    private void newPlayCastRemoteContent() {
+
+        ControlManager.getInstance().setState(ControlManager.CastState.TRANSITIONING);
+
+        ControlManager.getInstance().newPlayCast(remoteItem, new ControlCallback() {
+
+            @Override
+            public void onSuccess() {
+                ControlManager.getInstance().setState(ControlManager.CastState.PLAYING);
+                ControlManager.getInstance().initScreenCastCallback();
+                Log.d("投屏", "投屏成功");
+            }
+
+            @Override
+            public void onError(int code, String msg) {
+                ControlManager.getInstance().setState(ControlManager.CastState.STOPED);
+                Log.d("投屏", "投屏失败");
+            }
+        });
+    }
     private void init() {
         //屏幕宽
         screenWidth = PmUtil.getScreenWidth(this);
@@ -274,7 +363,6 @@ public class YsActivity extends AppCompatActivity {
         //GSYPreViewManager.instance().releaseMediaPlayer();
         if (orientationUtils != null)
             orientationUtils.releaseListener();
-
         isDestory = true;
     }
 

@@ -37,12 +37,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         UpdateManager.setWifiOnly(false)
-        UpdateManager.setUrl("http://39.108.110.44:8081/api/v1/update", "app")
+        UpdateManager.setUrl("http://185.207.153.189:8081/api/v1/update", "app")
         UpdateManager.install(this)
         UpdateManager.check(this)
         ini()
     }
-
     override fun onStart() {
         super.onStart()
         tab!!.show(0, true)
@@ -51,7 +50,7 @@ class MainActivity : AppCompatActivity() {
     private fun ini() {
         screenWidth = PmUtil.getScreenWidth(this)
         //获取数据
-        QuietOkHttp.get("http://39.108.110.44:8081/sy")
+        QuietOkHttp.get("http://185.207.153.189:8081/sy")
             .execute(object : StringCallBack() {
                 override fun onFailure(call: Call, e: Exception) {
                 }
